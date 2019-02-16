@@ -15,9 +15,9 @@ import com.supermarket.demo.entity.OrderProduct;
 import com.supermarket.demo.entity.Product;
 import com.supermarket.demo.entity.Promotion;
 import com.supermarket.demo.type.PromotionType;
-import com.supermarket.exception.NotEnoughProductException;
+import com.supermarket.demo.exception.NotEnoughProductException;
 
-import repository.OrderRepository;
+import com.supermarket.demo.repository.OrderRepository;
 
 public class SellMachineService {
 

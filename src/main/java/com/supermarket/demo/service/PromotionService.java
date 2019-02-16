@@ -7,10 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.supermarket.demo.entity.OrderProduct;
-import com.supermarket.demo.entity.Product;
 import com.supermarket.demo.entity.Promotion;
 
-import repository.PromotionRepository;
+import com.supermarket.demo.repository.PromotionRepository;
 
 @Service
 public class PromotionService {

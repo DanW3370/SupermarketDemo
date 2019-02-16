@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.supermarket.demo.entity.Order;
 import com.supermarket.demo.entity.OrderProduct;
 import com.supermarket.demo.service.SellMachineService;
-import com.supermarket.exception.NotEnoughProductException;
+import com.supermarket.demo.exception.NotEnoughProductException;
 
 @RestController
 @RequestMapping("api/machine")
