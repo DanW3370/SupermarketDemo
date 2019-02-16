@@ -2,17 +2,32 @@ package com.supermarket.demo.entity;
 
 import java.util.List;
 
+import javax.persistence.Column;
+import javax.persistence.Id;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 public class Product {
-	private Integer id;
+	@Id
+	@NotNull
+	@Size(max=50)
+	@Column(length=50)
+	private String id;
+	
+	@NotNull
+	@Size(max=50)
+	@Column(length=50)
 	private String  name;
+	
+	@NotNull
 	private double price;
-	private List promotions;
+	
 	private Integer store;
 	
-	public Integer getId() {
+	public String getId() {
 		return id;
 	}
-	public void setId(Integer id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 	
@@ -34,13 +49,6 @@ public class Product {
 	}
 	public void setPrice(double price) {
 		this.price = price;
-	}
-	
-	public List getPromotions() {
-		return promotions;
-	}
-	public void setPromotions(List promotions) {
-		this.promotions = promotions;
 	}
 	
 }
