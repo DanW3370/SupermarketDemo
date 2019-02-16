@@ -1,5 +1,6 @@
 package com.supermarket.demo.rest;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.persistence.EntityNotFoundException;
@@ -26,12 +27,11 @@ public class ProductResource {
 	public Product get(@PathVariable String id){
 		 Optional<Product> product = productService.get(id);
 
-	        if(!product.isPresent()){
-	            throw new EntityNotFoundException("Entity not found for Id: " + id);
-	        }
+	     if(!product.isPresent()){
+	         throw new EntityNotFoundException("Entity not found for Id: " + id);
+	     }
 
-	        return product.get();
-		
+	     return product.get();	
 	}
 	
 	@PostMapping
@@ -48,5 +48,10 @@ public class ProductResource {
 	@DeleteMapping("/{id}")
 	public void delete(@PathVariable String id) {
 		productService.delete(id);
+	}
+	
+	@GetMapping
+	public List<Product> getAllProduct(){
+		 return productService.getAll();
 	}
 }

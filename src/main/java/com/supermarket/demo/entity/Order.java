@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -17,7 +18,7 @@ import org.springframework.data.annotation.Transient;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 @Entity
-@Table(name="product")
+@Table(name="d_order")
 public class Order {
 	@Id
 	@NotNull
@@ -28,10 +29,11 @@ public class Order {
 	@JoinColumn(name = "prod_id", referencedColumnName = "id")
 	private List<OrderProduct> orderProducts = new ArrayList<>();
 	
-	private double totalPrice;	
-	private double savedMoney;
+	@Column
+	private Double totalPrice;	
 	
-	private List<Promotion> promotionList = new ArrayList<>();
+	@Column
+	private Double savedMoney;
 	
 	@JsonFormat(pattern = "dd/MM/yyyy") 
 	private LocalDate dateCreated;
@@ -41,7 +43,7 @@ public class Order {
 		setTotalPrice(totalPrice);
 		setSavedMoney(totalSavedPrice);
 		setOrderProducts(productList);
-		setPromotionList(promotionList);
+	
 	}
 
 	public Order() {
@@ -54,14 +56,6 @@ public class Order {
 
 	public void setSavedMoney(double savedMoney) {
 		this.savedMoney = savedMoney;
-	}
-
-	public List<Promotion> getPromotionList() {
-		return promotionList;
-	}
-
-	public void setPromotionList(List<Promotion> promotionList) {
-		this.promotionList = promotionList;
 	}
 
 	public Long getId() {
@@ -80,12 +74,12 @@ public class Order {
 		this.orderProducts = orderProducts;
 	}
 
-	public double getTotalPrice() {
+	public Double getTotalPrice() {
 		
-		return 0;
+		return new Double(0.00);
 	}
 
-	public void setTotalPrice(double totalPrice) {
+	public void setTotalPrice(Double totalPrice) {
 		this.totalPrice = totalPrice;
 	}
 
@@ -97,9 +91,9 @@ public class Order {
 		this.dateCreated = dateCreated;
 	}
 	
-	 @Transient
-	    public int getNumberOfProducts() {
-	        return this.orderProducts.size();
-	    }
+	@Transient
+	public int getNumberOfProducts() {
+	    return this.orderProducts.size();
+	}
 
 }

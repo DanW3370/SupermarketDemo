@@ -1,5 +1,6 @@
 package com.supermarket.demo.rest;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,5 +40,10 @@ public class PromotionResource {
 	@DeleteMapping("/{id}")
 	public void delete(@RequestParam String id) {
 		promotionService.delete(id);
+	}
+	
+	@GetMapping
+	public List<Promotion> getAllProduct(){
+		 return promotionService.getAll();
 	}
 }

@@ -1,36 +1,49 @@
 package com.supermarket.demo.entity;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 @Entity
-@Table(name="promotion")
+@Table(name="d_promotion")
 public class Promotion {
 	
-	private String id;
-	private double save;
-	private double discount;
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private Long id;
+	
+	@Column
+	private Double save;
+	
+	@OneToOne
+	@JoinColumn(name = "prod_id", referencedColumnName = "id")
 	private Product product;
+	
+	@Column
+	@NotNull
 	private Integer type;
+	
+	@Column
+	@NotNull
 	private Integer quantity;
 	
-	public String getId() {
+	public Long getId() {
 		return id;
 	}
-	public void setId(String id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
-	public double getSave() {
+	public Double getSave() {
 		return save;
 	}
-	public void setSave(double save) {
+	public void setSave(Double save) {
 		this.save = save;
-	}
-	public double getDiscount() {
-		return discount;
-	}
-	public void setDiscount(double discount) {
-		this.discount = discount;
 	}
 	public Product getProduct() {
 		return product;

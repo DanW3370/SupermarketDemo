@@ -23,7 +23,7 @@ public class SellMachineService {
 
 	private Order currentOrder = new Order();
 	
-	private Map<String,OrderProduct> OrderProductMap = new HashMap<String,OrderProduct>();
+	private Map<String,OrderProduct> orderProductMap = new HashMap<String,OrderProduct>();
 	
 	@Autowired
 	private PromotionService promotionService;
@@ -33,6 +33,29 @@ public class SellMachineService {
 	private ProductService productService;	
 	
 	
+	
+	public SellMachineService() {
+		initData();
+	}
+
+	private void initData() {
+		//initial product data to database
+		Product pizza = new Product("Pizza",10.00, 10);
+		Product fries = new Product("Fries",3.00, 10);
+		Product burger = new Product("Burger",10.00, 10);
+		Product salad = new Product("Salad",5.00, 10);
+		Product coke = new Product("Coke",2.00, 10);
+		
+		productService.create(pizza);
+		productService.create(fries);
+		productService.create(burger);
+		productService.create(salad);
+		productService.create(coke);
+		
+		//initial promotion Data to database
+		
+	}
+
 	/**
 	 * checkout: create a current order that can retrn to ront to display the info
 	 * haven't saved the order in the database
@@ -105,13 +128,12 @@ public class SellMachineService {
 	
 	public void cancel() {
 		currentOrder= new Order();
-		OrderProductMap = new HashMap<String,OrderProduct>();
 	}
 
 	public List<OrderProduct> addProduct(String id) {
-		OrderProduct orderProduct = OrderProductMap.get(id);
-		if(OrderProductMap.containsKey(id)) {
-			orderProduct = OrderProductMap.get(id);
+		OrderProduct orderProduct = orderProductMap.get(id);
+		if(orderProductMap.containsKey(id)) {
+			orderProduct = orderProductMap.get(id);
 			orderProduct.setQuantity(orderProduct.getQuantity() + 1);			
 		}else {
 			Optional<Product> product = productService.get(id);
@@ -119,15 +141,18 @@ public class SellMachineService {
 				throw new EntityNotFoundException("Entity not found for Id: " + id);
 		    }
 			orderProduct = new OrderProduct(product.get(),new Integer(1));
-			OrderProductMap.put(id, orderProduct);
+			orderProductMap.put(id, orderProduct);
 		}
 		
 		List<OrderProduct> productList = new ArrayList<>();
-		for(OrderProduct entry: OrderProductMap.values()) {
+		for(OrderProduct entry: orderProductMap.values()) {
 			productList.add(entry);
 		}
 		return productList;
-		
-		
+	}
+
+	public void cleanBasket() {
+		orderProductMap.clear();
+
 	}
 }

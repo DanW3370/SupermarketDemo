@@ -1,11 +1,13 @@
 package com.supermarket.demo.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.supermarket.demo.entity.OrderProduct;
+import com.supermarket.demo.entity.Product;
 import com.supermarket.demo.entity.Promotion;
 
 import repository.PromotionRepository;
@@ -40,5 +42,9 @@ public class PromotionService {
 	public Promotion getPromotionByProduct(OrderProduct product) {
 		
 		return null;
+	}
+
+	public List<Promotion> getAll() {
+		return promotionRepository.findAll();
 	}
 }

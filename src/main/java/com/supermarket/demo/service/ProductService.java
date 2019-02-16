@@ -1,5 +1,6 @@
 package com.supermarket.demo.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,5 +29,9 @@ public class ProductService {
 
 	public Product create(Product product) {
 		return productRepository.save(product);
+	}
+
+	public List<Product> getAll() {
+		return productRepository.findAll();
 	}
 }

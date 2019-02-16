@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.supermarket.demo.entity.Order;
 import com.supermarket.demo.entity.OrderProduct;
-import com.supermarket.demo.entity.Product;
 import com.supermarket.demo.service.SellMachineService;
 import com.supermarket.exception.NotEnoughProductException;
 
@@ -26,8 +24,8 @@ public class SellMachineResouce {
 	
 	@PostMapping("/addProduct/{id}")
 	public List<OrderProduct> addProduct(@RequestParam String id){
-		machineService.addProduct(id);
-		return null;
+		
+		return machineService.addProduct(id);
 	}
 	
 	@PostMapping("/checkout")
@@ -43,5 +41,10 @@ public class SellMachineResouce {
 	@DeleteMapping("/cancelOrder")
 	public void cancelOrder() {
 		machineService.cancel();
+	}
+	
+	@DeleteMapping("/cleanBasket")
+	public void cleanBasket() {
+		machineService.cleanBasket();
 	}
 }
