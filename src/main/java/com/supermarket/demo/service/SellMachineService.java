@@ -8,6 +8,7 @@ import java.util.Optional;
 
 import javax.persistence.EntityNotFoundException;
 
+import com.supermarket.demo.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.supermarket.demo.entity.Order;
@@ -18,23 +19,23 @@ import com.supermarket.demo.type.PromotionType;
 import com.supermarket.demo.exception.NotEnoughProductException;
 
 import com.supermarket.demo.repository.OrderRepository;
+import org.springframework.stereotype.Service;
 
+@Service
 public class SellMachineService {
 
 	private Order currentOrder = new Order();
 	
 	private Map<String,OrderProduct> orderProductMap = new HashMap<String,OrderProduct>();
-	
-	@Autowired
+
 	private PromotionService promotionService;
-	@Autowired
 	private OrderRepository orderRepository;
-	@Autowired
-	private ProductService productService;	
-	
-	
-	
-	public SellMachineService() {
+	private ProductService productService;
+
+	public SellMachineService(PromotionService promotionService, OrderRepository orderRepository, ProductService productRepository) {
+		this.promotionService = promotionService;
+		this.orderRepository = orderRepository;
+		this.productService = productRepository;
 		initData();
 	}
 
@@ -46,11 +47,11 @@ public class SellMachineService {
 		Product salad = new Product("Salad",5.00, 10);
 		Product coke = new Product("Coke",2.00, 10);
 		
-		productService.create(pizza);
-		productService.create(fries);
-		productService.create(burger);
-		productService.create(salad);
-		productService.create(coke);
+		this.productService.create(pizza);
+		this.productService.create(fries);
+		this.productService.create(burger);
+		this.productService.create(salad);
+		this.productService.create(coke);
 		
 		//initial promotion Data to database
 		

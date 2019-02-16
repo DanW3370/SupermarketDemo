@@ -38,6 +38,7 @@ public class Order {
 	@JsonFormat(pattern = "dd/MM/yyyy") 
 	private LocalDate dateCreated;
 
+
 	public Order(List<OrderProduct> productList, List<Promotion> promotionList, double totalSavedPrice,
 			double totalPrice) {
 		setTotalPrice(totalPrice);

@@ -28,8 +28,11 @@ public class Product {
 	
 	@Column
 	private Integer store;
-	
-	public Product(String n, double p,int s) {
+
+	public Product() {
+	}
+
+	public Product(String n, double p, int s) {
 		setName(n);
 		setPrice(p);
 		setStore(s);
