@@ -39,12 +39,11 @@ public class Order {
 	private LocalDate dateCreated;
 
 
-	public Order(List<OrderProduct> productList, List<Promotion> promotionList, double totalSavedPrice,
+	public Order(List<OrderProduct> productList,  double totalSavedPrice,
 			double totalPrice) {
 		setTotalPrice(totalPrice);
 		setSavedMoney(totalSavedPrice);
 		setOrderProducts(productList);
-	
 	}
 
 	public Order() {
@@ -94,7 +93,16 @@ public class Order {
 	
 	@Transient
 	public int getNumberOfProducts() {
-	    return this.orderProducts.size();
+		int num =0;
+		for(int i=0; i<this.orderProducts.size();i++) {
+			num+=orderProducts.get(i).getQuantity();
+		}
+	    return num;
+	}
+	
+	@Transient
+	public List<Promotion> getPromotions() {
+		return null;
 	}
 
 }

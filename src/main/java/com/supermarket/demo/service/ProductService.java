@@ -19,11 +19,11 @@ public class ProductService {
 		return productRepository.save(product);
 	}
 	
-	public void delete(String id) {
+	public void delete(Long id) {
 		productRepository.deleteById(id);
 	}
 
-	public Optional<Product> get(String id) {
+	public Optional<Product> get(Long id) {
 		return productRepository.findById(id);
 	}
 

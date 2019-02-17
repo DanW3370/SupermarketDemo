@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -33,12 +34,12 @@ public class PromotionResource {
 	}
 	
 	@GetMapping("/{id}")
-	public Optional<Promotion> get(@RequestParam String id) {
+	public Optional<Promotion> get(@PathVariable String id) {
 		return promotionService.get(id);
 	}
 	
 	@DeleteMapping("/{id}")
-	public void delete(@RequestParam String id) {
+	public void delete(@PathVariable String id) {
 		promotionService.delete(id);
 	}
 	

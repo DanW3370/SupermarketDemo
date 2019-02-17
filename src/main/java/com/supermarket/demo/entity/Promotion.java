@@ -6,12 +6,16 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import org.springframework.data.jpa.repository.Query;
+
 @Entity
 @Table(name="d_promotion")
+@NamedQuery(name = "Promotion.findByProduct", query = "select p from Promotion p where p.product = ?1 order by quantity DESC")
 public class Promotion {
 	
 	@Id
@@ -33,6 +37,17 @@ public class Promotion {
 	@NotNull
 	private Integer quantity;
 	
+	public Promotion(double save, Product product, Integer type, int quantity) {
+		this.save = save;
+		this.product = product;
+		this.type = type;
+		this.quantity = quantity;
+	}
+	
+	public Promotion() {
+		
+	}
+
 	public Long getId() {
 		return id;
 	}

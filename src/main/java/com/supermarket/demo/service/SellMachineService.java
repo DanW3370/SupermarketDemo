@@ -8,26 +8,24 @@ import java.util.Optional;
 
 import javax.persistence.EntityNotFoundException;
 
-import com.supermarket.demo.repository.ProductRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.supermarket.demo.entity.Order;
 import com.supermarket.demo.entity.OrderProduct;
 import com.supermarket.demo.entity.Product;
 import com.supermarket.demo.entity.Promotion;
-import com.supermarket.demo.type.PromotionType;
 import com.supermarket.demo.exception.NotEnoughProductException;
-
 import com.supermarket.demo.repository.OrderRepository;
-import org.springframework.stereotype.Service;
+import com.supermarket.demo.type.PromotionType;
 
 @Service
 public class SellMachineService {
 
-	private Order currentOrder = new Order();
+	private Order currentOrder;
 	
-	private Map<String,OrderProduct> orderProductMap = new HashMap<String,OrderProduct>();
-
+	private Map<Long,OrderProduct> orderProductMap = new HashMap<Long,OrderProduct>();
+	private List<OrderProduct> productList = new ArrayList<>();
+	
 	private PromotionService promotionService;
 	private OrderRepository orderRepository;
 	private ProductService productService;
@@ -47,14 +45,22 @@ public class SellMachineService {
 		Product salad = new Product("Salad",5.00, 10);
 		Product coke = new Product("Coke",2.00, 10);
 		
-		this.productService.create(pizza);
-		this.productService.create(fries);
-		this.productService.create(burger);
-		this.productService.create(salad);
-		this.productService.create(coke);
+		productService.create(pizza);
+		productService.create(fries);
+		productService.create(burger);
+		productService.create(salad);
+		productService.create(coke);
 		
 		//initial promotion Data to database
+		Promotion pizzaPmt1 = new Promotion(3.99,pizza,PromotionType.PROMOTION_WITH_PRODUCT_QUANTITY, 2);
+		Promotion pizzaPmt2 = new Promotion(9.99,pizza,PromotionType.PROMOTION_WITH_PRODUCT_QUANTITY, 3);
+		Promotion burgerPmt = new Promotion(4.99,burger,PromotionType.PROMOTION_WITH_PRODUCT_QUANTITY, 2);
+		Promotion friesPmt = new Promotion(0.99,burger,PromotionType.PROMOTION_WITH_PRODUCT_QUANTITY, 1);
 		
+		promotionService.create(pizzaPmt1);
+		promotionService.create(pizzaPmt2);
+		promotionService.create(burgerPmt);
+		promotionService.create(friesPmt);
 	}
 
 	/**
@@ -64,35 +70,32 @@ public class SellMachineService {
 	 * @return Order
 	 * @throws NotEnoughProductException
 	 */
-	public Order checkOut(List<OrderProduct> productList) throws NotEnoughProductException {
+	public Order checkOut() throws NotEnoughProductException {
 		double totalPrice =0.00 ;
 		double totalSavedPrice=0.00;		
 		List<Promotion> promotionList = new ArrayList<>();
+	
 		
 		for(int i=0;i<productList.size();i++) {
-			OrderProduct orderProduct = productList.get(i);
-			
+			OrderProduct orderProduct = productList.get(i);		
 			//validate product
 			validate(orderProduct);			
 			
 			//process promotions and totalPrice
 			double price = orderProduct.getProduct().getPrice() * orderProduct.getQuantity() ;
+			totalPrice+=price;
 			//check if any promotion can be used
-			Promotion promotion =promotionService.getPromotionByProduct(orderProduct);
-			if(promotion!=null && promotion.getType().equals(PromotionType.PROMOTION_WITH_PRODUCT_QUANTITY)) {
-				double savedPrice = promotion.getSave();
-				price = orderProduct.getProduct().getPrice() * orderProduct.getQuantity() - savedPrice;
-				
-				totalSavedPrice+=savedPrice;
-				
-				promotionList.add(promotion);
-			}			
-			totalPrice+=price;			
+			List<Promotion> appliedPromotions =promotionService.findPromotion(orderProduct);
+			
+			for(int j=0;j<appliedPromotions.size();j++) {
+				totalSavedPrice+=appliedPromotions.get(j).getSave();
+			}
+		}
+		totalPrice-=totalSavedPrice;
+		if(productList.size()>0) {
+			this.currentOrder = new Order(productList,totalSavedPrice,totalPrice);
 		}
 		
-		if(this.currentOrder == null) {
-			this.currentOrder = new Order(productList,promotionList,totalSavedPrice,totalPrice);
-		}
 		return currentOrder;
 	}
 	
@@ -104,7 +107,7 @@ public class SellMachineService {
 	 */
 	public Product validate(OrderProduct orderProdct) throws NotEnoughProductException{
 		Product product = orderProdct.getProduct();
-		if(product.getStore() <= orderProdct.getQuantity()) {
+		if(product.getStore() < orderProdct.getQuantity()) {
 			throw new NotEnoughProductException("There's no enough product stock!");
 		}
 		return product;
@@ -124,18 +127,29 @@ public class SellMachineService {
 			product.setStore(product.getStore() - orderProduct.getQuantity());
 			productService.update(product);
 		}
+		
 		return orderRepository.save(currentOrder);
+	}
+	
+	public List<OrderProduct> getProductListInBasket() {
+		return this.productList;
 	}
 	
 	public void cancel() {
 		currentOrder= new Order();
 	}
 
-	public List<OrderProduct> addProduct(String id) {
+	public List<OrderProduct> addProduct(Long id) throws NotEnoughProductException {
 		OrderProduct orderProduct = orderProductMap.get(id);
 		if(orderProductMap.containsKey(id)) {
 			orderProduct = orderProductMap.get(id);
-			orderProduct.setQuantity(orderProduct.getQuantity() + 1);			
+			orderProduct.setQuantity(orderProduct.getQuantity() + 1);
+			try {
+				validate(orderProduct);
+			} catch (NotEnoughProductException e) {
+				orderProduct.setQuantity(orderProduct.getQuantity()-1);
+				throw e;
+			}
 		}else {
 			Optional<Product> product = productService.get(id);
 			if(!product.isPresent()){
@@ -143,17 +157,14 @@ public class SellMachineService {
 		    }
 			orderProduct = new OrderProduct(product.get(),new Integer(1));
 			orderProductMap.put(id, orderProduct);
+			this.productList.add(orderProduct);
 		}
-		
-		List<OrderProduct> productList = new ArrayList<>();
-		for(OrderProduct entry: orderProductMap.values()) {
-			productList.add(entry);
-		}
-		return productList;
+
+		return this.productList;
 	}
 
 	public void cleanBasket() {
 		orderProductMap.clear();
-
+		this.productList.clear();
 	}
 }

@@ -24,7 +24,7 @@ public class ProductResource {
 	ProductService productService;
 	
 	@GetMapping("/{id}")
-	public Product get(@PathVariable String id){
+	public Product get(@PathVariable Long id){
 		 Optional<Product> product = productService.get(id);
 
 	     if(!product.isPresent()){
@@ -46,7 +46,7 @@ public class ProductResource {
 	}
 	
 	@DeleteMapping("/{id}")
-	public void delete(@PathVariable String id) {
+	public void delete(@PathVariable Long id) {
 		productService.delete(id);
 	}
 	
