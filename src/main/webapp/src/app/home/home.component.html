@@ -1,0 +1,59 @@
+<div class="container-fluid">
+  <div class="row">
+    <section class="col-8">
+      <h4>Products</h4>
+      <div class="card-columns">
+        <div class="card bg-light" *ngFor="let product of products">
+
+          <div class="card-header">{{product.name}}</div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-3"><label>Product Id:</label></div>
+              <div class="col-9">product.id</div>
+            </div>
+            <div class="row">
+              <div class="col-3"><label>Price:</label></div>
+              <div class="col-9">{{ product.price }}</div>
+            </div>
+          </div>
+          <div class="card-footer">
+            <button class="btn btn-primary" [disabled]="disabledSelection(product)" (click)="selectProduct(product.id)">Add to basket</button>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="col-4">
+
+      <div class="card mt-3">
+        <div class="card-header">Insert Coin</div>
+        <div class="card-body">
+          <button class="btn btn-primary col mt-2" (click)="insertCoin(0.05)">NICKEL(0.05)</button>
+          <button class="btn btn-primary col mt-2" (click)="insertCoin(0.10)">DIME(0.10)</button>
+          <button class="btn btn-primary col mt-2" (click)="insertCoin(0.25)">QUARTER(0.25)</button>
+          <button class="btn btn-primary col mt-2" (click)="insertCoin(1.00)">DOLLAR(1.00)</button>
+        </div>
+      </div>
+    <div class="card mt-3">
+        <div class="card-header">Display</div>
+        <div class="card-body bg-light">
+          <div class="row">
+            <div class="col">Inserted Coins:</div>
+            <div class="col">{{ order.totalPay | number : '1.2-2'}}</div>
+          </div>
+        </div>
+      </div>
+      <div class="card mt-3">
+        <div class="card-body">
+          <button class="btn btn-primary col mt-2" [disabled]="disableReturnCoin()" (click)="returnCoin()">Return Coin</button>
+        </div>
+      </div>
+
+      <div class="card mt-3" *ngIf="order">
+        <div class="card-header">Coin stock</div>
+        <div class="card-body bg-light">
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+
