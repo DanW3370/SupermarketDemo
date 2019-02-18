@@ -19,4 +19,8 @@ public class ProductPromotionQtyPriceOverride extends ProductPromotion {
     return price;
   }
 
+  @Override
+  public String toString() {
+    return "Buy " +this.requiredQty + " price " + this.price;
+  }
 }

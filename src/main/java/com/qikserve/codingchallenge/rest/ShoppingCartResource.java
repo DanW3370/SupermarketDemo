@@ -31,19 +31,9 @@ public class ShoppingCartResource {
 		return machineService.checkOut();
 	}
 
-	@PostMapping("/placeOrder")
-	public Order placeOrder(@RequestBody Order order){
-		return machineService.placeOrder();
-	}
-
 	@GetMapping("/getBasket")
 	public Order getBasket(){
 		return machineService.getCurrentOrder();
-	}
-
-	@DeleteMapping("/cancelOrder")
-	public void cancelOrder() {
-		machineService.cancel();
 	}
 
 	@DeleteMapping("/cleanBasket")

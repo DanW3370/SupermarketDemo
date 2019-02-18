@@ -1,20 +1,21 @@
 package com.qikserve.codingchallenge.entity;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Order {
 
-    private List<OrderItem> orderItems;
+    private long id;
+    private Instant orderDate;
 
-    private Long totalPrice;
-    private Long totalSave;
-    private Long finalPrice;
+    private List<OrderItem> orderItems = new ArrayList<>();
+
+    private long totalPrice;
+    private long totalSave;
+    private long finalPrice;
 
     public List<OrderItem> getOrderItems() {
-        if(this.orderItems == null){
-            this.orderItems = new ArrayList<>();
-        }
         return orderItems;
     }
 
@@ -22,8 +23,8 @@ public class Order {
         this.orderItems = orderItems;
     }
 
-    public Long getTotalPrice() {
-        this.totalPrice = Long.valueOf(0);
+    public long getTotalPrice() {
+        this.totalPrice = 0;
         for(OrderItem item: this.getOrderItems()){
             this.totalPrice += item.getPrice();
         }
@@ -31,12 +32,12 @@ public class Order {
         return this.totalPrice;
     }
 
-    public void setTotalPrice(Long totalPrice) {
+    public void setTotalPrice(long totalPrice) {
         this.totalPrice = totalPrice;
     }
 
-    public Long getTotalSave() {
-        this.totalSave = Long.valueOf(0);
+    public long getTotalSave() {
+        this.totalSave = 0;
         for(OrderItem item: this.getOrderItems()){
             this.totalSave += item.getSave();
         }
@@ -44,19 +45,35 @@ public class Order {
         return this.totalSave;
     }
 
-    public void setTotalSave(Long totalSave) {
+    public void setTotalSave(long totalSave) {
         this.totalSave = totalSave;
     }
 
-    public Long getFinalPrice() {
+    public long getFinalPrice() {
         return this.totalPrice - this.totalSave;
     }
 
-    public void setFinalPrice(Long finalPrice) {
+    public void setFinalPrice(long finalPrice) {
         this.finalPrice = finalPrice;
     }
 
     public void addOrderItem(OrderItem newItem) {
         this.getOrderItems().add(newItem);
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public Instant getOrderDate() {
+        return orderDate;
+    }
+
+    public void setOrderDate(Instant orderDate) {
+        this.orderDate = orderDate;
     }
 }

@@ -19,4 +19,8 @@ public class ProductPromotionBuyXGetYFree extends ProductPromotion {
     return freeQty;
   }
 
+  @Override
+  public String toString() {
+    return "Buy " + this.getRequiredQty() + " get " + this.freeQty + " Free";
+  }
 }

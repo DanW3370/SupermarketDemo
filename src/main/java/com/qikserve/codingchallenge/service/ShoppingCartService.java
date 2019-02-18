@@ -1,17 +1,24 @@
 package com.qikserve.codingchallenge.service;
 
-import java.util.List;
-
 import com.qikserve.codingchallenge.API;
+import com.qikserve.codingchallenge.entity.DetailedProductInfo;
 import com.qikserve.codingchallenge.entity.Order;
 import com.qikserve.codingchallenge.entity.OrderItem;
+import com.qikserve.codingchallenge.entity.ProductPromotion;
+import com.qikserve.codingchallenge.exception.InvalidPromotionTypeException;
+import com.qikserve.codingchallenge.processor.PromotionProcessorFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+
+import java.time.Instant;
+import java.util.HashMap;
+import java.util.List;
 
 
 @Service
 public class ShoppingCartService {
 
-	private List<Order> completedOrder;
+	HashMap<Long, Order> completedOrder = new HashMap<>();
 	private Order currentOrder;
 
 	/**
@@ -20,49 +27,14 @@ public class ShoppingCartService {
 	 * @return Order
 	 */
 	public Order checkOut() {
-//		double totalPrice =0.00 ;
-//		double totalSavedPrice=0.00;
-//		List<Promotion> promotionList = new ArrayList<>();
-//
-//
-//		for(int i=0;i<productList.size();i++) {
-//			OrderItem orderProduct = productList.get(i);
-//			//validate product
-//			validate(orderProduct);
-//
-//			//process promotions and totalPrice
-//			double price = orderProduct.getProduct().getPrice() * orderProduct.getQuantity() ;
-//			totalPrice+=price;
-//			//check if any promotion can be used
-//			List<Promotion> appliedPromotions =promotionService.findPromotion(orderProduct);
-//
-//			for(int j=0;j<appliedPromotions.size();j++) {
-//				totalSavedPrice+=appliedPromotions.get(j).getSave();
-//			}
-//		}
-//		totalPrice-=totalSavedPrice;
-//		if(productList.size()>0) {
-//			this.currentOrder = new Order(productList,totalSavedPrice,totalPrice);
-//		}
+		this.currentOrder.setFinalPrice(this.completedOrder.size() + 1);
+		this.currentOrder.setOrderDate(Instant.now());
+		Order cOrder = new Order();
+		BeanUtils.copyProperties(this.currentOrder, cOrder);
+		this.completedOrder.put(cOrder.getId(), cOrder);
 
-		return currentOrder;
-	}
-
-	/**
-	 * place order: complete order
-	 * save the order record to database and cut the product stock
-	 * @return Order: the saved order
-	 */
-	public Order placeOrder() {
-		List<OrderItem> list = currentOrder.getOrderItems();
-		for(int i=0; i<list.size();i++) {
-//			OrderItem orderProduct = list.get(i);
-//			Product product = validate(orderProduct);
-//			product.setStore(product.getStore() - orderProduct.getQuantity());
-//			productService.update(product);
-		}
-
-		return currentOrder;
+		this.currentOrder = new Order();
+		return cOrder;
 	}
 
 	public void cancel() {
@@ -81,23 +53,49 @@ public class ShoppingCartService {
 	}
 
 	private void addOrderItemToOrder(String id) {
+
 		List<OrderItem> orderItems = this.currentOrder.getOrderItems();
 		boolean found = false;
 		for(OrderItem item: orderItems){
-			if(item.getProduct().getId().equalsIgnoreCase(id)){
+			if(item.getDetailedProductInfo().getId().equalsIgnoreCase(id)){
 
 				item.setQuantity(item.getQuantity() + 1);
+				item.setSave(findAndApplyPromotion(item));
 				found = true;
 				break;
 			}
 		}
 
 		if(!found){
-			OrderItem newItem = new OrderItem();
-			newItem.setProduct(API.getDetailedProductInfo(id));
-			newItem.setQuantity(1);
-			this.currentOrder.addOrderItem(newItem);
+			addNewOrderItem(id);
 		}
+	}
+
+	private long findAndApplyPromotion(OrderItem item) {
+		int totalSave = 0;
+
+		DetailedProductInfo detailProduct = item.getDetailedProductInfo();
+		ProductPromotion[] availablePromotions = detailProduct.getPromotions();
+
+		for(ProductPromotion availablePromotion: availablePromotions){
+			try {
+				totalSave += PromotionProcessorFactory.getPromotionProcess(availablePromotion).processDiscount(item);
+			} catch (InvalidPromotionTypeException e) {
+				//Log the exception in logger.
+				//Dont process the promotion
+				totalSave = 0;
+			}
+		}
+
+		return totalSave;
+	}
+
+	private void addNewOrderItem(String id) {
+		OrderItem newItem = new OrderItem();
+		newItem.setDetailedProductInfo(API.getDetailedProductInfo(id));
+		newItem.setQuantity(1);
+		this.currentOrder.addOrderItem(newItem);
+		findAndApplyPromotion(newItem);
 	}
 
 	public Order getCurrentOrder(){

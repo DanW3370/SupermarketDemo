@@ -1,35 +1,25 @@
 package com.qikserve.codingchallenge.entity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class OrderItem {
 
-    private DetailedProductInfo product;
-    private List<ProductPromotion> promotion;
-    private Integer quantity;
-    private Long price;
-    private Long save;
+    private DetailedProductInfo detailedProductInfo;
+    private List<ProductPromotion> usedPromotions = new ArrayList<>();
+    private int quantity;
+    private long price;
+    private long save;
 
-    public DetailedProductInfo getProduct() {
-        return product;
+    public DetailedProductInfo getDetailedProductInfo() {
+        return detailedProductInfo;
     }
 
-    public void setProduct(DetailedProductInfo product) {
-        this.product = product;
+    public void setDetailedProductInfo(DetailedProductInfo detailedProductInfo) {
+        this.detailedProductInfo = detailedProductInfo;
     }
 
-    public List<ProductPromotion> getPromotion() {
-        return promotion;
-    }
-
-    public void setPromotion(List<ProductPromotion> promotion) {
-        this.promotion = promotion;
-    }
-
-    public Integer getQuantity() {
-        if(this.quantity == null){
-            this.quantity = 0;
-        }
+    public int getQuantity() {
         return quantity;
     }
 
@@ -37,19 +27,31 @@ public class OrderItem {
         this.quantity = quantity;
     }
 
-    public Long getPrice() {
+    public long getPrice() {
         return price;
     }
 
-    public void setPrice(Long price) {
+    public void setPrice(long price) {
         this.price = price;
     }
 
-    public Long getSave() {
+    public long getSave() {
         return save;
     }
 
-    public void setSave(Long save) {
+    public void setSave(long save) {
         this.save = save;
+    }
+
+    public List<ProductPromotion> getUsedPromotions() {
+        return usedPromotions;
+    }
+
+    public void setUsedPromotions(List<ProductPromotion> usedPromotions) {
+        this.usedPromotions = usedPromotions;
+    }
+
+    public void addUsedPromotion(ProductPromotion promotion){
+        this.getUsedPromotions().add(promotion);
     }
 }

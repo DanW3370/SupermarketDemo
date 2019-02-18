@@ -13,4 +13,8 @@ public class ProductPromotionFlatPercent extends ProductPromotion {
     return amount;
   }
 
+  @Override
+  public String toString() {
+    return this.getAmount() + " percent off ";
+  }
 }
