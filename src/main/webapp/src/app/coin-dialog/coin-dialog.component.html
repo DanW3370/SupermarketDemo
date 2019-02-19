@@ -1,0 +1,33 @@
+<div class="modal-header">
+  <h4 class="modal-title" id="modal-title">Refill Coin</h4>
+</div>
+<div class="modal-body">
+    <div class="form-group row">
+      <label class="col-4 col-form-label">NICLEL(0.05)</label>
+      <div class="col-8">
+        <input type="number" class="form-control" [(ngModel)]="coin5">
+      </div>
+    </div>
+    <div class="form-group row">
+      <label class="col-4 col-form-label">DIME(0.10)</label>
+      <div class="col-8">
+        <input type="number" class="form-control" [(ngModel)]="coin10">
+      </div>
+    </div>
+    <div class="form-group row">
+      <label class="col-4 col-form-label">QUARTER(0.25)</label>
+      <div class="col-8">
+        <input type="number" class="form-control" [(ngModel)]="coin25">
+      </div>
+    </div>
+    <div class="form-group row">
+      <label class="col-4 col-form-label">DOLLAR(1.00)</label>
+      <div class="col-8">
+        <input type="number" class="form-control" [(ngModel)]="coin100">
+      </div>
+    </div>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-outline-secondary" (click)="modal.dismiss('cancel click')">Cancel</button>
+  <button type="button" class="btn btn-danger" (click)="serviceCoin();">Ok</button>
+</div>
