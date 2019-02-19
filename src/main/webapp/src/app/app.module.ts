@@ -12,8 +12,6 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {HomeComponent} from "./home/home.component";
 import {HttpClientModule} from "@angular/common/http";
 import {MachineService} from "./services/machine.service";
-import {ProductDialogComponent} from './product-dialog/product-dialog.component';
-import {CoinDialogComponent} from './coin-dialog/coin-dialog.component';
 import {AlertDialogComponent} from './alert-dialog/alert-dialog.component';
 
 @NgModule({
@@ -21,8 +19,6 @@ import {AlertDialogComponent} from './alert-dialog/alert-dialog.component';
     AppComponent,
     HomeComponent,
     ToastComponent,
-    ProductDialogComponent,
-    CoinDialogComponent,
     AlertDialogComponent
   ],
   imports: [
@@ -40,7 +36,7 @@ import {AlertDialogComponent} from './alert-dialog/alert-dialog.component';
     ToasterService,
     MachineService
   ],
-  entryComponents: [ProductDialogComponent,CoinDialogComponent, AlertDialogComponent],
+  entryComponents: [AlertDialogComponent],
   bootstrap: [AppComponent]
 })
 export class AppModule {
