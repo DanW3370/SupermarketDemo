@@ -1,5 +1,5 @@
 {
-  "name": "vending-machine",
+  "name": "ShoppingCart",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",

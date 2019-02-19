@@ -24,6 +24,6 @@ public class FlatPercentProcessor extends AbstractPromotionProcessor {
     public long calculateSave(OrderItem item) {
         DetailedProductInfo productInfo = item.getDetailedProductInfo();
 
-        return (long) (productInfo.getPrice() * this.promotion.getAmount());
+        return (long) (productInfo.getPrice() * this.promotion.getAmount() / 100);
     }
 }

@@ -11,6 +11,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -27,7 +28,7 @@ public class ShoppingCartService {
 	 * @return Order
 	 */
 	public Order checkOut() {
-		this.currentOrder.setFinalPrice(this.completedOrder.size() + 1);
+		this.currentOrder.setId(this.completedOrder.size());
 		this.currentOrder.setOrderDate(Instant.now());
 		Order cOrder = new Order();
 		BeanUtils.copyProperties(this.currentOrder, cOrder);
@@ -43,7 +44,7 @@ public class ShoppingCartService {
 
 	public Order addProduct(String id) {
 
-		if(this.currentOrder != null){
+		if(this.currentOrder == null){
 			this.currentOrder = new Order();
 		}
 
@@ -72,7 +73,7 @@ public class ShoppingCartService {
 	}
 
 	private long findAndApplyPromotion(OrderItem item) {
-		int totalSave = 0;
+		long totalSave = item.getSave();
 
 		DetailedProductInfo detailProduct = item.getDetailedProductInfo();
 		ProductPromotion[] availablePromotions = detailProduct.getPromotions();
@@ -94,17 +95,17 @@ public class ShoppingCartService {
 		OrderItem newItem = new OrderItem();
 		newItem.setDetailedProductInfo(API.getDetailedProductInfo(id));
 		newItem.setQuantity(1);
+		newItem.setSave(findAndApplyPromotion(newItem));
 		this.currentOrder.addOrderItem(newItem);
-		findAndApplyPromotion(newItem);
-	}
-
-	public Order getCurrentOrder(){
-		return this.currentOrder;
 	}
 
 	public void cleanBasket() {
 		if(this.currentOrder != null){
 			this.currentOrder.getOrderItems().clear();
 		}
+	}
+
+	public List<Order> getOrderHistory(){
+		return new ArrayList<>(this.completedOrder.values());
 	}
 }

@@ -13,51 +13,53 @@ export class HomeComponent implements OnInit {
 
     products: any;
     order: any;
+    completedOrders: any;
+
     constructor(private machineService: MachineService, private modalService: NgbModal, private productService: ProductService) {
+
     }
 
     ngOnInit() {
-        this.machineService.resetSession().subscribe(r => { }, this.errorHandler);
         this.products = [];
+        this.completedOrders = [];
+        this.order = {orderItems:[], totalPrice: 0, totalSave: 0, finalPrice: 0};
+        this.cleanBasket();
         this.getAllProducts();
     }
 
-    selectProduct(productId) {
+    addToCart(productId) {
         const self = this;
-        this.machineService.selectProduct(productId).subscribe(
+        this.machineService.addToCart(productId).subscribe(
             order => {
 
-                self.processOrder(order);
+                self.order = order;
             },
             this.errorHandler
         );
     }
 
-    insertCoin(coin) {
+    checkout() {
         const self = this;
-        this.machineService.insertCoin(coin).subscribe(
-            order => {
-                self.processOrder(order);
-            },
-            this.errorHandler
-        );
-    }
-
-    returnCoin() {
-        const self = this;
-        this.machineService.returnCoin().subscribe(
+        this.machineService.checkOut().subscribe(
             data => {
-                let msg = '';
-                // tslint:disable-next-line:forin
-                for (const key in data) {
-                    msg += 'Coin ' + Number(key).toFixed(2) + ': ' + data[key] + '\t ';
-                }
-                self.alert('Return coin', msg);
-                self.getAllProducts();
+                let msg = 'id: ' + data['id'] + ' total price: ' + data['totalPrice'] + ' total save: ' + data['totalSave'] + ' final price: ' + data['finalPrice'];
+                self.alert('Order Detail', msg);
+                self.getOrderHistory();
+                self.order = {orderItems:[], totalPrice: 0, totalSave: 0, finalPrice: 0};
             },
             this.errorHandler
         );
     }
+
+  cleanBasket() {
+    const self = this;
+    this.machineService.cleanBasket().subscribe(
+      data => {
+        self.order = {orderItems:[], totalPrice: 0, totalSave: 0, finalPrice: 0};
+      },
+      this.errorHandler
+    );
+  }
 
     errorHandler(error) {
         console.error(error);
@@ -69,16 +71,12 @@ export class HomeComponent implements OnInit {
       alert.componentInstance.message = message;
     }
 
-    private processOrder(order: Object) {
-        if (order && order['id'] && order['id'] > 0) {
-            this.alert('You have purchase '
-              + order['product'].name, 'Inserted Coin: ' + order['totalPay'] + ' product price'
-              + order['productPrice'] + ' Change:' + Number(order['change']).toFixed(2));
-            this.machineService.resetSession();
-            this.getAllProducts();
-        } else {
-            this.order = order;
-        }
+    getOrderHistory() {
+      const self = this;
+      this.machineService.getOrderHistory().subscribe(data => {
+        self.completedOrders = data;
+      },
+        this.errorHandler)
     }
 
     private getAllProducts() {
@@ -88,23 +86,5 @@ export class HomeComponent implements OnInit {
             },
             this.errorHandler
         );
-
-        this.order = { totalPay: 0.0, productPrice: 0.0, change: 0.0 };
-    }
-
-    disableReturnCoin() {
-        let r = true;
-        if (this.order.totalPay > 0) {
-            r = false;
-        }
-        return r;
-    }
-
-    disabledSelection(product: any) {
-        let r = true;
-        if (this.order && product.price <= this.order.totalPay) {
-            r = false;
-        }
-        return r;
     }
 }

@@ -28,6 +28,6 @@ public class BuyXGetYFreeProcessor extends AbstractPromotionProcessor {
 
     @Override
     public long calculateSave(OrderItem item) {
-        return item.getPrice() * this.promotion.getFreeQty();
+        return item.getDetailedProductInfo().getPrice() * this.promotion.getFreeQty();
     }
 }

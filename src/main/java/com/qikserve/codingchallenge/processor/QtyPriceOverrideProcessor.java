@@ -30,6 +30,6 @@ public class QtyPriceOverrideProcessor extends AbstractPromotionProcessor {
     @Override
     public long calculateSave(OrderItem item) {
 
-        return item.getPrice() * this.promotion.getRequiredQty() - this.promotion.getPrice();
+        return item.getDetailedProductInfo().getPrice() * this.promotion.getRequiredQty() - this.promotion.getPrice();
     }
 }

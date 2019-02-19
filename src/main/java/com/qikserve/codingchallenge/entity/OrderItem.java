@@ -28,6 +28,7 @@ public class OrderItem {
     }
 
     public long getPrice() {
+        this.price = this.detailedProductInfo.getPrice() * this.quantity;
         return price;
     }
 

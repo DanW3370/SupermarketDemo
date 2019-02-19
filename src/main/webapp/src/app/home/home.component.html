@@ -8,16 +8,25 @@
           <div class="card-header">{{detailedProductInfo.name}}</div>
           <div class="card-body">
             <div class="row">
-              <div class="col-3"><label>Product Id:</label></div>
-              <div class="col-9">detailedProductInfo.id</div>
+              <div class="col-3"><label>Id:</label></div>
+              <div class="col-9">{{detailedProductInfo.id}}</div>
             </div>
             <div class="row">
               <div class="col-3"><label>Price:</label></div>
-              <div class="col-9">{{ detailedProductInfo.price }}</div>
+              <div class="col-9">£{{ detailedProductInfo.price /100 }}</div>
             </div>
           </div>
           <div class="card-footer">
-            <button class="btn btn-primary" [disabled]="disabledSelection(detailedProductInfo)" (click)="selectProduct(detailedProductInfo.id)">Add to basket</button>
+            <button class="btn btn-primary" (click)="addToCart(detailedProductInfo.id)">Add to basket</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" *ngIf="completedOrders.length > 0">
+        <div class="card-header">Orders:</div>
+        <div class="card-body text-center">
+          <div *ngFor="let order of completedOrders">
+            <b>id</b>: {{order.id}} <b>Raw Total: </b>: £{{ order.totalPrice/100 }} <b>Total Promotion: </b>: £{{ order.totalSave/100 }} <b>Total Payable: </b>: £{{ order.finalPrice /100 }} <b>date</b>: {{ order.orderDate | date:'medium' }}
           </div>
         </div>
       </div>
@@ -25,32 +34,33 @@
     <section class="col-4">
 
       <div class="card mt-3">
-        <div class="card-header">Insert Coin</div>
-        <div class="card-body">
-          <button class="btn btn-primary col mt-2" (click)="insertCoin(0.05)">NICKEL(0.05)</button>
-          <button class="btn btn-primary col mt-2" (click)="insertCoin(0.10)">DIME(0.10)</button>
-          <button class="btn btn-primary col mt-2" (click)="insertCoin(0.25)">QUARTER(0.25)</button>
-          <button class="btn btn-primary col mt-2" (click)="insertCoin(1.00)">DOLLAR(1.00)</button>
-        </div>
-      </div>
-    <div class="card mt-3">
-        <div class="card-header">Display</div>
+        <div class="card-header">Shopping cart</div>
         <div class="card-body bg-light">
+          <div class="row" *ngFor="let item of order.orderItems">
+            <div class="col-6">{{item.quantity}} x {{item.detailedProductInfo.name}}</div> <div class="col-6 text-right">£{{item.price /100}}</div>
+            <div class="col-6 text-right" *ngIf="item.save > 0">save:</div>
+            <div class="col-6 text-right" *ngIf="item.save > 0">£{{item.save /100}}</div>
+          </div>
+          <br/>
           <div class="row">
-            <div class="col">Inserted Coins:</div>
-            <div class="col">{{ order.totalPay | number : '1.2-2'}}</div>
+            <div class="col">Raw Total:</div>
+            <div class="col">£{{ order.totalPrice /100 }}</div>
+          </div>
+          <div class="row">
+            <div class="col">Total Promotion:</div>
+            <div class="col">£{{ order.totalSave /100}}</div>
+          </div>
+          <div class="row">
+            <div class="col">Total Payable:</div>
+            <div class="col">£{{ order.finalPrice /100}}</div>
           </div>
         </div>
       </div>
+
       <div class="card mt-3">
         <div class="card-body">
-          <button class="btn btn-primary col mt-2" [disabled]="disableReturnCoin()" (click)="returnCoin()">Return Coin</button>
-        </div>
-      </div>
-
-      <div class="card mt-3" *ngIf="order">
-        <div class="card-header">Coin stock</div>
-        <div class="card-body bg-light">
+          <button class="btn btn-primary col mt-2" [disabled]="order.orderItems.length == 0" (click)="checkout()">Quick Checkout</button>
+          <button class="btn btn-primary col mt-2" [disabled]="order.orderItems.length == 0" (click)="cleanBasket()">Clean Shopping cart</button>
         </div>
       </div>
     </section>

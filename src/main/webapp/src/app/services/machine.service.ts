@@ -7,34 +7,22 @@ import {environment} from '../../environments/environment';
 })
 export class MachineService {
 
-  private machineUrl = 'machine/';
+  private machineUrl = 'shoppingCart/';
   constructor(private http: HttpClient, ) { }
 
-  fetchMachineStatusFromServer() {
-    return this.http.get(environment.appUrl + this.machineUrl);
+  checkOut() {
+    return this.http.get(environment.appUrl + this.machineUrl + 'checkout/');
   }
 
-  selectProduct(productId: any) {
-    return this.http.get(environment.appUrl + this.machineUrl + 'selectproduct/' + productId);
+  addToCart(productId: any) {
+    return this.http.get(environment.appUrl + this.machineUrl + 'addProduct/' + productId);
   }
 
-  insertCoin(coin: string) {
-    return this.http.get(environment.appUrl + this.machineUrl + 'insertcoin/' + coin);
+  cleanBasket() {
+    return this.http.delete(environment.appUrl + this.machineUrl + 'cleanBasket/');
   }
 
-  returnCoin() {
-    return this.http.delete(environment.appUrl + this.machineUrl + 'returncoin/');
-  }
-
-  resetSession() {
-    return this.http.delete(environment.appUrl + this.machineUrl + 'resetSession/');
-  }
-
-  serviceCoin(coinStock) {
-    return this.http.post(environment.appUrl + this.machineUrl + 'fillCoin/', coinStock);
-  }
-
-  serveProduct(productStock: any) {
-    return this.http.post(environment.appUrl + this.machineUrl + 'fillProduct/', productStock);
+  getOrderHistory() {
+    return this.http.get(environment.appUrl + this.machineUrl + 'getOrderHistory/');
   }
 }

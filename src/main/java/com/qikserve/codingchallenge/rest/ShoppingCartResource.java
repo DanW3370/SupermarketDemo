@@ -31,9 +31,9 @@ public class ShoppingCartResource {
 		return machineService.checkOut();
 	}
 
-	@GetMapping("/getBasket")
-	public Order getBasket(){
-		return machineService.getCurrentOrder();
+	@GetMapping("/getOrderHistory")
+	public List<Order> getOrderHistory(){
+		return machineService.getOrderHistory();
 	}
 
 	@DeleteMapping("/cleanBasket")

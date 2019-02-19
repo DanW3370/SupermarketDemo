@@ -1,4 +1,4 @@
-package com.supermarket.demo;
+package com.qikserve.codingchallenge;
 
 import io.restassured.http.ContentType;
 import org.junit.Test;
